@@ -1,5 +1,5 @@
 """
-Основное FastAPI приложение для AI Visibility MVP - адаптированное для Vercel
+Основное FastAPI приложение для AI Visibility MVP - исправленная версия
 """
 
 import os
@@ -306,7 +306,7 @@ LANDING_HTML = """<!DOCTYPE html>
             <div class="template-section">
                 <h3>📋 Start with Our Template</h3>
                 <p>Download our CSV template with examples to get started quickly</p>
-                <a href="/download-template" class="btn btn-secondary" download>
+                <a href="/api/download-template" class="btn btn-secondary" download>
                     📥 Download Template
                 </a>
             </div>
@@ -393,7 +393,7 @@ LANDING_HTML = """<!DOCTYPE html>
             formData.append('file', document.getElementById('file').files[0]);
             
             try {
-                const response = await fetch('/submit', {
+                const response = await fetch('/api/submit', {
                     method: 'POST',
                     body: formData
                 });
@@ -484,30 +484,38 @@ def create_geo_targeted_prompt(prompt: str, country: str) -> str:
 
 def create_template_csv() -> bytes:
     """
-    Создание CSV шаблона в памяти
+    Создание CSV шаблона в памяти с правильными данными
     
     Returns:
         Bytes содержимого CSV файла
     """
+    # ИСПРАВЛЕННЫЕ ДАННЫЕ - убедимся что это правильный шаблон
     template_data = {
         'Country': [
-            'UK', 'USA', 'Germany', 'UK', 'USA'
+            'UK', 'USA', 'Germany', 'UK', 'USA',
+            'Germany', 'UK', 'USA', 'Germany', 'UK'
         ],
         'Prompt': [
-            'Dyson V15 cordless vacuum cleaner best price',
+            'Dyson V15 cordless vacuum cleaner best price UK',
             'KitchenAid stand mixer reviews USA', 
-            'Samsung Waschmaschine 9kg Frontlader',
-            'Ninja air fryer large capacity reviews',
-            'Bosch dishwasher built-in stainless steel'
+            'Samsung Waschmaschine 9kg Frontlader Deutschland',
+            'Ninja air fryer large capacity reviews UK',
+            'Bosch dishwasher built-in stainless steel USA',
+            'Miele Waschmaschine Test Deutschland',
+            'Shark vacuum cleaner cordless UK best',
+            'Instant Pot pressure cooker reviews USA',
+            'AEG Geschirrspüler Einbau Deutschland',
+            'Russell Hobbs kettle best price UK'
         ],
         'Website': [
-            'amazon.com', 'amazon.com', 'amazon.com', 'amazon.com', 'amazon.com'
+            'amazon.com', 'amazon.com', 'amazon.de', 'amazon.co.uk', 'amazon.com',
+            'amazon.de', 'amazon.co.uk', 'amazon.com', 'amazon.de', 'amazon.co.uk'
         ]
     }
     
     df = pd.DataFrame(template_data)
     
-    # Создаем CSV в памяти
+    # Создаем CSV в памяти с правильным названием
     output = BytesIO()
     df.to_csv(output, index=False, encoding='utf-8-sig')
     output.seek(0)
@@ -578,14 +586,14 @@ def process_file_worker(file_path: str, email: str, ip: str) -> None:
         except:
             pass
 
-# Vercel serverless function initialization
 @app.on_event("startup")
 async def startup_event():
     """Инициализация при запуске приложения"""
     try:
-        # В Vercel serverless окружении не все конфигурации могут быть доступны
-        # validate_config()  # Комментируем для Vercel
-        print("✅ AI Visibility MVP запущен на Vercel")
+        validate_config()
+        print("✅ Конфигурация проверена")
+        print("✅ База данных инициализирована")
+        print("✅ AI Visibility MVP запущен")
     except Exception as e:
         print(f"❌ Ошибка при запуске: {e}")
         # В serverless среде не останавливаем приложение
@@ -596,7 +604,7 @@ async def serve_landing():
     """Отдача лендинг страницы"""
     return HTMLResponse(content=LANDING_HTML, status_code=200)
 
-@app.get("/download-template")
+@app.get("/api/download-template")
 async def download_template():
     """
     Эндпоинт для скачивания шаблона CSV файла
@@ -604,15 +612,32 @@ async def download_template():
     Returns:
         CSV файл с примерами
     """
+    print("=== СОЗДАНИЕ ШАБЛОНА ===")
     csv_bytes = create_template_csv()
+    print(f"Размер файла: {len(csv_bytes)} байт")
+    
+    # ИСПРАВЛЕННЫЙ заголовок с правильным именем файла
+    headers = {
+        "Content-Disposition": "attachment; filename=ai_visibility_template.csv",
+        "Content-Type": "text/csv; charset=utf-8",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
     
     return StreamingResponse(
         BytesIO(csv_bytes),
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=ai_visibility_template.csv"}
+        headers=headers
     )
 
-@app.post("/submit")
+# Дублированный эндпоинт для совместимости
+@app.get("/download-template") 
+async def download_template_root():
+    """Дублированный эндпоинт для совместимости"""
+    return await download_template()
+
+@app.post("/api/submit")
 async def submit_file(
     request: Request,
     email: str = Form(..., description="Email для отправки отчета"),
@@ -649,7 +674,7 @@ async def submit_file(
     client_ip = get_client_ip(request)
     file_hash = hashlib.sha256(content).hexdigest()
     
-    # Проверка IP и файла (упрощенная для Vercel)
+    # Проверка IP и файла
     try:
         db.check_ip_file_access(client_ip, file_hash, ALLOW_RETRY_SAME_FILE)
     except PermissionError as e:
@@ -684,10 +709,20 @@ async def submit_file(
         "message": "Файл принят в обработку. Ожидайте отчет на email."
     })
 
+# Дублированный эндпоинт для совместимости
+@app.post("/submit")
+async def submit_file_root(
+    request: Request,
+    email: str = Form(...),
+    file: UploadFile = File(...)
+):
+    """Дублированный эндпоинт для совместимости"""
+    return await submit_file(request, email, file)
+
 @app.get("/health")
 async def health_check():
     """Проверка состояния сервиса"""
-    return {"status": "ok", "service": "AI Visibility MVP", "platform": "Vercel"}
+    return {"status": "ok", "service": "AI Visibility MVP"}
 
 @app.get("/api")
 async def api_info():
@@ -695,16 +730,10 @@ async def api_info():
     return {
         "message": "AI Visibility MVP API", 
         "version": "1.0.0",
-        "platform": "Vercel Serverless",
         "supported_format": "CSV with columns: Country, Prompt, Website",
-        "template_download": "/download-template",
-        "endpoints": ["/submit", "/download-template", "/health"]
+        "template_download": "/api/download-template",
+        "endpoints": ["/api/submit", "/api/download-template", "/health"]
     }
-
-# Vercel serverless handler
-def handler(request, response):
-    """Vercel serverless handler"""
-    return app(request, response)
 
 if __name__ == "__main__":
     import uvicorn
