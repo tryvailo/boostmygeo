@@ -1,6 +1,5 @@
 {
   "build": {
-    "os": "ubuntu-20.04",
     "commands": [
       "pip install -r requirements.txt"
     ]
