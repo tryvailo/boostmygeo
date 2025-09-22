@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/main.py": {
-      "runtime": "python@3.9"
+      "runtime": "python3.9"
     }
   },
   "routes": [
@@ -9,5 +9,12 @@
       "src": "/(.*)",
       "dest": "/api/main.py"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "PIP_NO_DEPS": "1",
+      "PIP_IGNORE_INSTALLED": "1"
+    },
+    "installCommand": "pip install -r requirements.txt"
+  }
 }
