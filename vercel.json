@@ -1,9 +1,4 @@
 {
-  "build": {
-    "commands": [
-      "pip install -r requirements.txt"
-    ]
-  },
   "functions": {
     "api/main.py": {
       "runtime": "python3.9"
