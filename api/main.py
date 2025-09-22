@@ -1,5 +1,5 @@
 """
-Основное FastAPI приложение для AI Visibility MVP - исправленная версия
+Основное FastAPI приложение для AI Visibility MVP
 """
 
 import os
@@ -39,340 +39,187 @@ app.add_middleware(
 
 # HTML лендинг страницы встроенный в код
 LANDING_HTML = """<!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Visibility Analytics - Analyze Your Brand's AI Search Presence</title>
+    <title>BoostMyGEO - Перевірте, чи рекомендує ШІ ваші продукти</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .gradient-text {
+            background: linear-gradient(45deg, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        .gradient-button {
+            background: linear-gradient(45deg, #059669, #10b981);
         }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+        .gradient-button-blue {
+            background: linear-gradient(45deg, #2563eb, #3b82f6);
         }
-        
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 3rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            /* ИСПРАВЛЕНИЕ: Уменьшение нижнего отступа, чтобы сократить пробел перед футером */
-            margin-bottom: 1rem;
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
         }
-        
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 1rem;
-            font-size: 2.5rem;
-            font-weight: 700;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+        .hover-lift {
+            transition: all 0.3s ease;
         }
-        
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
-        
-        .feature {
-            text-align: center;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-        
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature h3 {
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-        
-        .upload-section {
-            background: #f8f9fa;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-        
-        input[type="email"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="email"]:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .file-upload {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        
-        input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="file"]:hover {
-            border-color: #667eea;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            margin-left: 1rem;
-        }
-        
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-        
-        .template-section {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .format-info {
-            background: #e3f2fd;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-top: 2rem;
-        }
-        
-        .format-info h4 {
-            color: #1976d2;
-            margin-bottom: 1rem;
-        }
-        
-        .format-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .format-table th,
-        .format-table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .format-table th {
-            background: #f5f5f5;
-            font-weight: 600;
-        }
-        
-        .status {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            display: none;
-        }
-        
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
         .footer {
-            text-align: center;
-            color: white;
-            /* ИСПРАВЛЕНИЕ: Уменьшение верхнего отступа, чтобы сократить пробел */
             margin-top: 1rem;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .card {
-                padding: 2rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .btn-secondary {
-                margin-left: 0;
-                margin-top: 1rem;
-                width: 100%;
-            }
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="card">
-            <h1>🤖 AI Visibility Analytics</h1>
-            <p class="subtitle">Analyze your brand's visibility in ChatGPT, Claude, and other AI search engines</p>
-            
-            <div class="feature-grid">
-                <div class="feature">
-                    <div class="feature-icon">📊</div>
-                    <h3>AIV Score</h3>
-                    <p>Get your AI Visibility Score from 0-100 with detailed metrics</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🌍</div>
-                    <h3>Geo-Targeting</h3>
-                    <p>Analyze visibility across different countries and languages</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🏆</div>
-                    <h3>Competitor Analysis</h3>
-                    <p>See how you rank against competitors in AI search results</p>
-                </div>
-            </div>
-            
-            <div class="template-section">
-                <h3>📋 Start with Our Template</h3>
-                <p>Download our CSV template with examples to get started quickly</p>
-                <a href="/api/download-template" class="btn btn-secondary" download>
-                    📥 Download Template
+<body class="bg-gray-900 text-gray-200 font-sans leading-relaxed">
+
+    <!-- Header Section -->
+    <header class="py-6 px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="text-2xl font-bold gradient-text">BoostMyGEO</div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-white transition-colors duration-200">Переваги</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Як це працює</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Кейси</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Ціни</a>
+            </nav>
+            <a href="#cta" class="py-2 px-6 rounded-full text-white font-semibold shadow-lg gradient-button-blue hover-lift">
+                Спробувати безкоштовно
+            </a>
+            <button class="md:hidden text-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Hero Section -->
+        <section class="text-center py-20 md:py-32">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+                Перевірте, чи рекомендує <span class="gradient-text">ШІ</span> ваші продукти
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+                Отримайте оцінку видимості та проаналізуйте, як ваш бренд, товари та послуги представлені в результатах пошуку ChatGPT, Gemini, Copilot та інших.
+            </p>
+            <div class="space-x-4">
+                <a href="#cta" class="py-3 px-8 rounded-full text-white font-bold shadow-xl hover-lift inline-block gradient-button">
+                    Отримати аналіз
                 </a>
             </div>
-            
-            <div class="upload-section">
-                <h3>🚀 Upload Your Analysis File</h3>
-                <form id="uploadForm">
-                    <div class="form-group">
-                        <label for="email">Email Address (for receiving results)</label>
-                        <input type="email" id="email" name="email" required placeholder="your.email@company.com">
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-16">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-8 rounded-2xl text-center hover-lift fade-in feature-card">
+                    <div class="text-4xl mb-4">🏆</div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Оцінка видимості ШІ</h3>
+                    <p class="text-gray-400">
+                        Розраховуємо ваш AIV-Score від 0 до 100, враховуючи позицію, згадки, конкурентів та інші фактори.
+                    </p>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl text-center hover-lift fade-in feature-card" style="animation-delay: 0.1s;">
+                    <div class="text-4xl mb-4">🌍</div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Геотаргетинг</h3>
+                    <p class="text-gray-400">
+                        Аналізуємо результати в різних країнах та мовах, щоб оцінити вашу локальну присутність.
+                    </p>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl text-center hover-lift fade-in feature-card" style="animation-delay: 0.2s;">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Звіт з деталями</h3>
+                    <p class="text-gray-400">
+                        Надсилаємо повний звіт про видимість вашого бренду в ШІ-пошуку з ключовими показниками.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+                Як це працює
+            </h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="p-6 bg-gray-800 rounded-xl hover-lift">
+                        <h4 class="text-xl font-semibold mb-2 text-white">1. Завантажте файл</h4>
+                        <p class="text-gray-400">
+                            Просто завантажте файл CSV або XLSX із переліком продуктів, ключових запитів і доменів.
+                        </p>
+                        <a href="/api/download-template" class="text-blue-400 hover:text-blue-300 transition-colors duration-200 mt-2 block font-medium" download>
+                            Завантажити шаблон →
+                        </a>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="file">Upload CSV/Excel File</label>
-                        <input type="file" id="file" name="file" accept=".csv,.xlsx,.tsv" required>
-                        <small style="color: #666; margin-top: 0.5rem; display: block;">
-                            Supported formats: CSV, XLSX, TSV (Max 10MB)
+                    <div class="p-6 bg-gray-800 rounded-xl hover-lift">
+                        <h4 class="text-xl font-semibold mb-2 text-white">2. ШІ аналізує дані</h4>
+                        <p class="text-gray-400">
+                            Наш алгоритм на основі передових ШІ-моделей аналізує, як ваш бренд, продукти та послуги представлені в ШІ-пошуку.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-gray-800 rounded-xl hover-lift">
+                        <h4 class="text-xl font-semibold mb-2 text-white">3. Отримайте звіт</h4>
+                        <p class="text-gray-400">
+                            Ми надішлемо вам детальний звіт на електронну пошту з вашим AIV-Score та рекомендаціями.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://placehold.co/400x300/1e293b/d1d5db?text=AI+Analysis" alt="AI analysis process illustration" class="w-full h-auto rounded-xl shadow-lg">
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section id="cta" class="py-16 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Готові підвищити видимість?</h2>
+            <p class="text-lg text-gray-400 mb-8">
+                Завантажте файл, щоб дізнатися, чи ваші продукти готові до ери ШІ-пошуку.
+            </p>
+            <div class="bg-gray-800 p-8 rounded-2xl max-w-2xl mx-auto shadow-lg">
+                <form id="uploadForm" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-gray-400 mb-2 text-left">Ваш Email</label>
+                        <input type="email" id="email" name="email" required placeholder="your.email@company.com" class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="file" class="block text-gray-400 mb-2 text-left">Завантажте файл (CSV/XLSX)</label>
+                        <input type="file" id="file" name="file" accept=".csv,.xlsx,.tsv" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 text-gray-300">
+                        <small class="text-gray-500 mt-2 block text-left">
+                            Підтримувані формати: CSV, XLSX, TSV (Макс. 10МБ)
                         </small>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">
-                        🔍 Analyze AI Visibility
+                    <button type="submit" class="w-full py-3 rounded-full text-white font-bold shadow-lg hover-lift gradient-button-blue">
+                        Аналізувати видимість
                     </button>
                 </form>
-                
-                <div id="status" class="status"></div>
+                <div id="status" class="status mt-4 text-left"></div>
             </div>
-            
-            <div class="format-info">
-                <h4>📋 Required File Format</h4>
-                <p>Your CSV file must contain exactly these 3 columns:</p>
-                <table class="format-table">
-                    <thead>
-                        <tr>
-                            <th>Column</th>
-                            <th>Description</th>
-                            <th>Example</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Country</strong></td>
-                            <td>Target country for geo-specific analysis</td>
-                            <td>USA, UK, Germany</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Prompt</strong></td>
-                            <td>Search query to analyze</td>
-                            <td>"best vacuum cleaner 2024"</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Website</strong></td>
-                            <td>Your domain to track</td>
-                            <td>amazon.com</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>&copy; 2024 AI Visibility Analytics. Powered by OpenAI & Advanced Analytics.</p>
-        </div>
-    </div>
+        </section>
+
+        <!-- Final CTA section -->
+        <section id="final-cta" class="py-16 text-center">
+            <a href="#cta" class="py-3 px-8 rounded-full text-white font-bold shadow-xl hover-lift inline-block gradient-button">
+                Почати аналіз
+            </a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer text-center text-gray-500">
+        <p>&copy; 2024 BoostMyGEO. Всі права захищені.</p>
+    </footer>
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async function(e) {
@@ -383,11 +230,11 @@ LANDING_HTML = """<!DOCTYPE html>
             
             // Reset status
             statusDiv.style.display = 'none';
-            statusDiv.className = 'status';
+            statusDiv.className = '';
             
             // Disable submit button
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '⏳ Processing...';
+            submitBtn.innerHTML = '⏳ Обробка...';
             
             // Get form data
             const formData = new FormData();
@@ -403,51 +250,85 @@ LANDING_HTML = """<!DOCTYPE html>
                 const result = await response.json();
                 
                 if (response.ok) {
-                    statusDiv.className = 'status success';
+                    statusDiv.className = 'status success bg-green-900 text-green-300 p-4 rounded-xl';
                     statusDiv.innerHTML = `
-                        <strong>✅ Success!</strong><br>
-                        Your file has been received and is being processed.<br>
-                        Results will be sent to <strong>${result.email}</strong> within 5-10 minutes.
+                        <strong>✅ Успіх!</strong><br>
+                        Файл отримано та обробляється.<br>
+                        Звіт буде надіслано на <strong>${result.email}</strong> протягом 5-10 хвилин.
                     `;
                     
-                    // Reset form
                     document.getElementById('uploadForm').reset();
                 } else {
+                    statusDiv.className = 'status error bg-red-900 text-red-300 p-4 rounded-xl';
+                    statusDiv.innerHTML = `
+                        <strong>❌ Помилка:</strong><br>
+                        ${result.detail || 'Помилка завантаження'}
+                    `;
                     throw new Error(result.detail || 'Upload failed');
                 }
             } catch (error) {
-                statusDiv.className = 'status error';
+                statusDiv.className = 'status error bg-red-900 text-red-300 p-4 rounded-xl';
                 statusDiv.innerHTML = `
-                    <strong>❌ Error:</strong><br>
+                    <strong>❌ Помилка:</strong><br>
                     ${error.message}
                 `;
             } finally {
                 // Re-enable submit button
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '🔍 Analyze AI Visibility';
+                submitBtn.innerHTML = 'Аналізувати видимість';
                 statusDiv.style.display = 'block';
             }
         });
         
-        // File validation
+        // File validation - Updated to use custom modal
         document.getElementById('file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const maxSize = 10 * 1024 * 1024; // 10MB
                 if (file.size > maxSize) {
-                    alert('File too large. Maximum size is 10MB.');
+                    showCustomModal('Файл занадто великий. Максимальний розмір 10МБ.');
                     e.target.value = '';
                     return;
                 }
                 
-                const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-                if (!validTypes.includes(file.type) && !file.name.match(/\.(csv|xlsx|tsv)$/i)) {
-                    alert('Invalid file type. Please upload CSV, XLSX, or TSV files only.');
+                const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/tsv'];
+                if (!validTypes.includes(file.type) && !file.name.match(/\\.(csv|xlsx|tsv)$/i)) {
+                    showCustomModal('Неправильний тип файлу. Будь ласка, завантажуйте лише файли CSV, XLSX або TSV.');
                     e.target.value = '';
                     return;
                 }
             }
         });
+
+        function showCustomModal(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000;';
+            modal.innerHTML = `
+                <div style="background: #1f2937; padding: 2rem; border-radius: 1rem; text-align: center; max-width: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
+                    <p style="color: #f3f4f6; font-size: 1.125rem; margin-bottom: 1.5rem;">${message}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: #3b82f6; color: white; padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: bold;">Закрити</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(el => {
+            observer.observe(el);
+        });
+
     </script>
 </body>
 </html>"""
@@ -491,7 +372,6 @@ def create_template_csv() -> bytes:
     Returns:
         Bytes содержимого CSV файла
     """
-    # ИСПРАВЛЕННЫЕ ДАННЫЕ - убедимся что это правильный шаблон
     template_data = {
         'Country': [
             'UK', 'USA', 'Germany', 'UK', 'USA',
@@ -517,7 +397,6 @@ def create_template_csv() -> bytes:
     
     df = pd.DataFrame(template_data)
     
-    # Создаем CSV в памяти с правильным названием
     output = BytesIO()
     df.to_csv(output, index=False, encoding='utf-8-sig')
     output.seek(0)
@@ -534,32 +413,25 @@ def process_file_worker(file_path: str, email: str, ip: str) -> None:
         ip: IP адрес пользователя
     """
     try:
-        # Обработка файла
         queries_df, processed_count = FileProcessor.process_file(file_path)
         
-        # Создание списка для результатов
         results = []
         
-        # Обработка каждого запроса
         for _, row in queries_df.iterrows():
             country = row['Country']
             prompt = row['Prompt']
             target_domain = row['target_domain']
             
-            # Создание геотаргетированного запроса
             geo_prompt = create_geo_targeted_prompt(prompt, country)
             
-            # Вызов OpenAI API
             search_result = openai_client.search_with_web(geo_prompt)
             sources = search_result["sources"]
             usage = search_result["usage"]
             
-            # Расчет метрик для конкретного домена
             metrics = MetricsCalculator.calculate_metrics_for_query(
                 sources, target_domain, country
             )
             
-            # Добавление базовых данных
             result_row = {
                 "Оригинальный промпт": prompt,
                 "Геотаргетированный промпт": geo_prompt,
@@ -569,20 +441,16 @@ def process_file_worker(file_path: str, email: str, ip: str) -> None:
             
             results.append(result_row)
         
-        # Создание DataFrame и CSV
         results_df = pd.DataFrame(results)
         csv_content = results_df.to_csv(index=False, encoding="utf-8-sig").encode("utf-8-sig")
         
-        # Сохранение email в базу
         db.save_email(email, ip)
         
-        # Отправка отчета
         email_service.send_report_email(email, csv_content, len(results))
         
     except Exception as e:
         print(f"Ошибка обработки файла: {e}")
     finally:
-        # Удаление временного файла
         try:
             os.remove(file_path)
         except:
@@ -598,7 +466,6 @@ async def startup_event():
         print("✅ AI Visibility MVP запущен")
     except Exception as e:
         print(f"❌ Ошибка при запуске: {e}")
-        # В serverless среде не останавливаем приложение
         pass
 
 @app.get("/")
@@ -614,11 +481,8 @@ async def download_template():
     Returns:
         CSV файл с примерами
     """
-    print("=== СОЗДАНИЕ ШАБЛОНА ===")
     csv_bytes = create_template_csv()
-    print(f"Размер файла: {len(csv_bytes)} байт")
     
-    # ИСПРАВЛЕННЫЙ заголовок с правильным именем файла
     headers = {
         "Content-Disposition": "attachment; filename=ai_visibility_template.csv",
         "Content-Type": "text/csv; charset=utf-8",
@@ -632,12 +496,6 @@ async def download_template():
         media_type="text/csv",
         headers=headers
     )
-
-# Дублированный эндпоинт для совместимости
-@app.get("/download-template") 
-async def download_template_root():
-    """Дублированный эндпоинт для совместимости"""
-    return await download_template()
 
 @app.post("/api/submit")
 async def submit_file(
@@ -656,37 +514,30 @@ async def submit_file(
     Returns:
         JSON ответ с статусом обработки
     """
-    # Валидация email
     if not EMAIL_REGEX.match(email):
         raise HTTPException(status_code=400, detail="Неверный формат email")
     
-    # Чтение содержимого файла
     try:
         content = await file.read()
     except Exception as e:
         raise HTTPException(status_code=400, detail="Ошибка чтения файла")
     
-    # Проверка размера файла
     try:
         FileProcessor.validate_file_size(content, MAX_UPLOAD_MB)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-    # Получение IP и хеша файла
     client_ip = get_client_ip(request)
     file_hash = hashlib.sha256(content).hexdigest()
     
-    # Проверка IP и файла
     try:
         db.check_ip_file_access(client_ip, file_hash, ALLOW_RETRY_SAME_FILE)
     except PermissionError as e:
         raise HTTPException(status_code=429, detail=str(e))
     except Exception as e:
-        # В serverless среде могут быть проблемы с базой данных
         print(f"Database warning: {e}")
         pass
     
-    # Сохранение файла во временную директорию
     file_extension = FileProcessor.get_file_extension(file.filename)
     try:
         with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
@@ -695,7 +546,6 @@ async def submit_file(
     except Exception as e:
         raise HTTPException(status_code=500, detail="Ошибка сохранения файла")
     
-    # Запуск асинхронной обработки
     worker_thread = threading.Thread(
         target=process_file_worker,
         args=(temp_file_path, email, client_ip),
@@ -703,39 +553,17 @@ async def submit_file(
     )
     worker_thread.start()
     
-    # Возврат успешного ответа
     return JSONResponse({
         "ok": True,
         "email": email,
         "status": "processing",
-        "message": "Файл принят в обработку. Ожидайте отчет на email."
+        "message": "Файл прийнято в обробку. Очікуйте звіт на email."
     })
-
-# Дублированный эндпоинт для совместимости
-@app.post("/submit")
-async def submit_file_root(
-    request: Request,
-    email: str = Form(...),
-    file: UploadFile = File(...)
-):
-    """Дублированный эндпоинт для совместимости"""
-    return await submit_file(request, email, file)
 
 @app.get("/health")
 async def health_check():
     """Проверка состояния сервиса"""
     return {"status": "ok", "service": "AI Visibility MVP"}
-
-@app.get("/api")
-async def api_info():
-    """Информация об API"""
-    return {
-        "message": "AI Visibility MVP API", 
-        "version": "1.0.0",
-        "supported_format": "CSV with columns: Country, Prompt, Website",
-        "template_download": "/api/download-template",
-        "endpoints": ["/api/submit", "/api/download-template", "/health"]
-    }
 
 if __name__ == "__main__":
     import uvicorn
