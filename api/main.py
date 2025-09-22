@@ -70,7 +70,8 @@ LANDING_HTML = """<!DOCTYPE html>
             border-radius: 15px;
             padding: 3rem;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            /* ИСПРАВЛЕНИЕ: Уменьшение нижнего отступа, чтобы сократить пробел перед футером */
+            margin-bottom: 1rem;
         }
         
         h1 {
@@ -255,7 +256,8 @@ LANDING_HTML = """<!DOCTYPE html>
         .footer {
             text-align: center;
             color: white;
-            margin-top: 2rem;
+            /* ИСПРАВЛЕНИЕ: Уменьшение верхнего отступа, чтобы сократить пробел */
+            margin-top: 1rem;
         }
         
         @media (max-width: 768px) {
@@ -439,7 +441,7 @@ LANDING_HTML = """<!DOCTYPE html>
                 }
                 
                 const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-                if (!validTypes.includes(file.type) && !file.name.match(/\\.(csv|xlsx|tsv)$/i)) {
+                if (!validTypes.includes(file.type) && !file.name.match(/\.(csv|xlsx|tsv)$/i)) {
                     alert('Invalid file type. Please upload CSV, XLSX, or TSV files only.');
                     e.target.value = '';
                     return;
